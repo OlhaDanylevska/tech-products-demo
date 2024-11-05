@@ -1,7 +1,8 @@
----
 tags:
   - name: Resources
     description: Useful resources shared by the users.
+  - name: Bookmarks
+    description: Bookmarked resources shared by the users.
   - name: Topics
     description: Topics to group the resources into.
   - name: Users
@@ -25,6 +26,15 @@ components:
             example:
               title: '"title" is required'
               url: '"url" must be a valid uri'
+    DuplicatedBookmark:
+      description: The requested resource was bookmarked.
+      content:
+        application/json:
+          schema:
+            type: string
+          example:
+            user_id: "User ID is required"
+            resource_id: "Resource ID is required"
     ConflictError:
       description: The request conflicted with a previous request.
       content:
@@ -77,6 +87,7 @@ components:
               type: string
               format: uuid
               description: The ID of the user who suggested the resource.
+
     DraftResource:
       allOf:
         - $ref: "#/components/schemas/BaseResource"
@@ -90,6 +101,7 @@ components:
               type: string
               example: null
               nullable: true
+
     EnrichedResource:
       allOf:
         - $ref: "#/components/schemas/Resource"
@@ -98,6 +110,7 @@ components:
             topic_name:
               type: string
               example: "HTML/CSS"
+
     PublishedResource:
       allOf:
         - $ref: "#/components/schemas/BaseResource"
@@ -115,10 +128,12 @@ components:
                 The ID of the user who published the resource (or `null`, if the SUDO token was used).
               type: string
               format: uuid
+
     Resource:
       oneOf:
         - $ref: "#/components/schemas/DraftResource"
         - $ref: "#/components/schemas/PublishedResource"
+
     ResourceCreation:
       type: object
       required: [title, url]
@@ -136,6 +151,7 @@ components:
           type: string
           format: uri
           example: https://syllabus.codeyourfuture.io/
+
     PaginatedResources:
       allOf:
         - $ref: "#/components/schemas/Pagination"
@@ -146,6 +162,32 @@ components:
               type: array
               items:
                 $ref: "#/components/schemas/EnrichedResource"
+
+    BookmarkCreation:
+      type: object
+      required: [title, url]
+      properties:
+        title:
+          type: string
+          example: Bookmark Title
+        url:
+          type: string
+          format: uri
+          example: https://example.com
+        description:
+          type: string
+          example: An example bookmark.
+
+    PaginatedBookmarks:
+      allOf:
+        - $ref: "#/components/schemas/Pagination"
+        - type: object
+          properties:
+            bookmarks:
+              type: array
+              items:
+                $ref: "#/components/schemas/EnrichedResource"
+
     Pagination:
       type: object
       required: [page, lastPage, perPage, totalCount]
@@ -162,6 +204,7 @@ components:
         totalCount:
           type: number
           example: 52
+
     Topic:
       type: object
       required: [id, name]
@@ -172,6 +215,7 @@ components:
         name:
           type: string
           example: SQL & Postgres
+
     User:
       type: object
       required: [id, github_id, name]

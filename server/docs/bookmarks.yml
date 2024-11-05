@@ -1,0 +1,80 @@
+---
+/bookmarks:
+  get:
+    tags: [Bookmarks]
+    description: Get all bookmarks.
+    security:
+      - authCookie: []
+      - sudoToken: []
+    parameters:
+      - in: query
+        name: draft
+        description: |
+          Bookmarks are only available to authorised users.
+        schema:
+          type: boolean
+    responses:
+      201:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaginatedBookmarks"
+      500:
+        $ref: "#/components/responses/InternalServerError"
+  post:
+    tags: [Bookmarks]
+    description: Share a new resource.
+    security:
+      - authCookie: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/BookmarkCreation"
+    responses:
+      201:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Resource"
+      401:
+        $ref: "#/components/responses/UnauthorizedError"
+      409:
+        $ref: "#/components/responses/DuplicatedBookmark"
+      500:
+        $ref: "#/components/responses/InternalServerError"
+/bookmarks/{id}:
+  delete:
+    tags: [Bookmarks]
+    description: |
+      Delete an existing bookmark by id.
+    security:
+      - authCookie: []
+      - sudoToken: []
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          format: uuid
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [draft]
+            properties:
+              draft:
+                type: boolean
+                example: false
+    responses:
+      204:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeleteBookmark"
+      500:
+        $ref: "#/components/responses/InternalServerError"
