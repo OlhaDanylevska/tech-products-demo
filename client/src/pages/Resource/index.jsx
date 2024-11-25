@@ -6,16 +6,16 @@ import { ResourceService, useService } from "../../services";
 import "./Resource.scss";
 
 export default function Resource() {
-	const [resource, setResource] = useState(undefined);
+	const [resource, setResource] = useState({});
 	const resourceService = useService(ResourceService);
 	const { id } = useParams();
 
 	useEffect(() => {
 		resourceService.getOne(id).then(setResource);
-	}, [id, resourceService]);
+	}, [id, resourceService, resource]);
 
-	if (!resource) {
-		return null;
+	if (!resource || !resource.url) {
+		return <div>Loading or No resource available</div>;
 	}
 
 	return (
@@ -70,9 +70,13 @@ export default function Resource() {
 }
 
 function formatUrl(url) {
-	const host = new URL(url).host;
-	if (host.startsWith("www.")) {
-		return host.slice(4);
+	try {
+		const host = new URL(url).host;
+		if (host.startsWith("www.")) {
+			return host.slice(4);
+		}
+		return host;
+	} catch (e) {
+		throw new Error("Invalid URL", url);
 	}
-	return host;
 }
