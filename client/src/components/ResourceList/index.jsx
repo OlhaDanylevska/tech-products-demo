@@ -6,6 +6,8 @@ import BookmarkFlag from "../BookmarkFlag";
 
 import "./ResourceList.scss";
 
+import "./ResourceList.scss";
+
 export default function ResourceList({
 	publish,
 	resources,
@@ -28,10 +30,12 @@ export default function ResourceList({
 		try {
 			if (bookmarkedResourceIds[resourceId]) {
 				await bookmarkService.removeBookmark(resourceId);
+				await bookmarkService.removeBookmark(resourceId);
 				setBookmarkedResourceIds((prev) => ({ ...prev, [resourceId]: false }));
 				setBookmarkedResources((prev) =>
 					prev.filter((bookmark) => bookmark.resource_id !== resourceId)
 				);
+				onBookmarkToggle(resourceId);
 				onBookmarkToggle(resourceId);
 			} else {
 				const newBookmark = await bookmarkService.addBookmark(resourceId);
