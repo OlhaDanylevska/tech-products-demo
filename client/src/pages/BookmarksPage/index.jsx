@@ -31,12 +31,6 @@ const BookmarksPage = () => {
 		fetchData();
 	}, [bookmarkService, resourceService]);
 
-	const handleBookmarkToggle = (resourceId) => {
-		setBookmarkedResourcesList((prev) =>
-			prev.filter((resource) => resource.id !== resourceId)
-		);
-	};
-
 	return (
 		<section>
 			<h2>Your Bookmarked Resources</h2>
@@ -45,10 +39,14 @@ const BookmarksPage = () => {
 					resources={bookmarkedResourcesList}
 					bookmarkedResources={allBookmarks}
 					setBookmarkedResources={setAllBookmarks}
-					onBookmarkToggle={handleBookmarkToggle}
+					onBookmarkToggle={(resourceId) => {
+						setBookmarkedResourcesList((prev) =>
+							prev.filter((resource) => resource.id !== resourceId)
+						);
+					}}
 				/>
 			) : (
-				<p>You haven&apos;t bookmarked any resources yet.</p>
+				<p>You haven’t bookmarked any resources yet.</p>
 			)}
 		</section>
 	);

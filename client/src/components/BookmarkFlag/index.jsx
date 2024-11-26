@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 const BookmarkFlag = ({ color, stroke, onClick }) => {
 	return (
 		<button
+			id="bookmark"
 			onClick={onClick}
 			style={{
 				background: "none",
@@ -19,6 +20,7 @@ const BookmarkFlag = ({ color, stroke, onClick }) => {
 			aria-label="Bookmark"
 		>
 			<svg
+				data-testid="bookmark-icon"
 				xmlns="http://www.w3.org/2000/svg"
 				viewBox="0 0 30 30"
 				width="30px"

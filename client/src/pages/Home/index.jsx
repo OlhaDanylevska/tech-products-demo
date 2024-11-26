@@ -8,7 +8,9 @@ export function Home() {
 	const resourceService = useService(ResourceService);
 	const bookmarkService = useService(BookmarkService);
 	const searchParams = useSearchParams();
-	const [{ lastPage, resources } = {}, setEnvelope] = useState();
+	const [{ lastPage, resources = [] } = {}, setEnvelope] = useState({
+		resources: [],
+	});
 	const [bookmarkedResources, setBookmarkedResources] = useState([]);
 
 	useEffect(() => {
@@ -28,12 +30,19 @@ export function Home() {
 		fetchData();
 	}, [resourceService, bookmarkService, searchParams]);
 
+	const onBookmarkToggle = (resourceId) => {
+		setBookmarkedResources((prev) =>
+			prev.filter((bookmark) => bookmark.resource_id !== resourceId)
+		);
+	};
+
 	return (
 		<section>
 			<ResourceList
-				resources={resources ?? []}
-				bookmarkedResources={bookmarkedResources ?? []}
+				resources={resources}
+				bookmarkedResources={bookmarkedResources}
 				setBookmarkedResources={setBookmarkedResources}
+				onBookmarkToggle={onBookmarkToggle}
 			/>
 			<Pagination lastPage={lastPage ?? 1} />
 		</section>
