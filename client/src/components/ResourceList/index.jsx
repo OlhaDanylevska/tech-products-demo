@@ -65,9 +65,13 @@ ResourceList.propTypes = {
 };
 
 function formatUrl(url) {
-	const host = new URL(url).host;
-	if (host.startsWith("www.")) {
-		return host.slice(4);
+	try {
+		const host = new URL(url).host;
+		if (host.startsWith("www.")) {
+			return host.slice(4);
+		}
+		return host;
+	} catch (error) {
+		throw new Error("Invalid URL", url);
 	}
-	return host;
 }
