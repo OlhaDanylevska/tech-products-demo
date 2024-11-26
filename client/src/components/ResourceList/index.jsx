@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import Link from "react-dom";
+import { Link } from "react-router-dom";
 
 import { BookmarkService, useService } from "../../services";
 import BookmarkFlag from "../BookmarkFlag";
