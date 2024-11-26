@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 
 const BookmarkFlag = ({ color, stroke, onClick }) => {
 	return (
-		// Use a button for accessibility
 		<button
 			onClick={onClick}
 			style={{
@@ -11,13 +10,11 @@ const BookmarkFlag = ({ color, stroke, onClick }) => {
 				padding: 0,
 				cursor: "pointer",
 			}}
-			// Add keyboard accessibility
 			onKeyDown={(e) => {
 				if (e.key === "Enter" || e.key === " ") {
 					onClick();
 				}
 			}}
-			// Ensure the button is focusable
 			tabIndex={0}
 			aria-label="Bookmark"
 		>
