@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { usePrincipal } from "../../authContext";
 import { BookmarkService, useService } from "../../services";
 import BookmarkFlag from "../BookmarkFlag";
 
@@ -16,6 +17,8 @@ export default function ResourceList({
 }) {
 	const [bookmarkedResourceIds, setBookmarkedResourceIds] = useState({});
 	const bookmarkService = useService(BookmarkService);
+	const principal = usePrincipal();
+	const [unauthorized, setUnauthorized] = useState("");
 
 	useEffect(() => {
 		try {
@@ -53,22 +56,29 @@ export default function ResourceList({
 				setBookmarkedResources((prev) => [...prev, newBookmark]);
 			}
 		} catch (err) {
-			throw new Error("Error toggling bookmark:", err);
+			if (err.message.includes("unauthorized")) {
+				setUnauthorized("Please log in to make a bookmark.");
+				setTimeout(() => setUnauthorized(""), 5000);
+			} else {
+				throw new Error(
+					"An unexpected error occurred while managing bookmarks."
+				);
+			}
 		}
 	};
 
 	return (
 		<ul className="resource-list">
+			{unauthorized && <div className="error-message">{unauthorized}</div>}
 			{resources.length === 0 ? (
 				<li className="no-resources">
 					<em>No resources to show.</em>
 				</li>
 			) : (
-				resources.map((resource, index) => {
+				resources.map((resource) => {
 					if (!resource || !resource.id || !resource.title) {
-						throw new Error(`Invalid resource at index ${index}:`, resource);
+						return null;
 					}
-
 					const { description, id, title, topic_name, url } = resource;
 
 					return (
@@ -82,7 +92,6 @@ export default function ResourceList({
 								<h3>
 									<Link to={id && `/resource/${id}`}>{title}</Link>
 								</h3>
-
 								{topic_name && <span className="topic">{topic_name}</span>}
 							</div>
 							{description && (
@@ -95,11 +104,15 @@ export default function ResourceList({
 								{publish && (
 									<button onClick={() => publish(id)}>Publish</button>
 								)}
-								<BookmarkFlag
-									color={bookmarkedResourceIds[id] ? "black" : "white"}
-									stroke="black"
-									onClick={() => handleToggleBookmark(id)}
-								/>
+								{principal ? (
+									<BookmarkFlag
+										color={bookmarkedResourceIds[id] ? "black" : "white"}
+										stroke="black"
+										onClick={() => handleToggleBookmark(id)}
+									/>
+								) : (
+									<span>Please log in to bookmark the resource.</span>
+								)}
 							</div>
 						</li>
 					);
@@ -134,6 +147,6 @@ function formatUrl(url) {
 		const host = new URL(url).host;
 		return host.startsWith("www.") ? host.slice(4) : host;
 	} catch (error) {
-		throw new Error("Invalid URL:", url);
+		return url;
 	}
 }
