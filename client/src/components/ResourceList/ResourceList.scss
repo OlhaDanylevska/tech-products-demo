@@ -64,4 +64,36 @@ ul.resource-list {
 		white-space: pre-line;
 		word-break: break-word;
 	}
+
+	.bookmarked {
+		background-color: #e1d7c6;
+		border: 1px solid #333;
+		border-radius: 4px;
+		padding: 16px;
+	}
+
+	.not-bookmarked {
+		background-color: white;
+		border: 1px solid #333;
+		border-radius: 4px;
+		padding: 16px;
+	}
+
+	.resource-list {
+		list-style: none;
+	}
+
+	.resource-description {
+		font-size: 14px;
+	}
+
+	.topic {
+		font-size: 12px;
+		color: #888;
+	}
+
+	.no-resources {
+		text-align: center;
+		font-style: italic;
+	}
 }
